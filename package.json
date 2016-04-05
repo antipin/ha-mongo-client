@@ -1,6 +1,6 @@
 {
   "name": "insistent-mongo-client",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Wrapper arount native MongoClient that allows to retry connection to MongoDB on application startup",
   "main": "index.js",
   "scripts": {
