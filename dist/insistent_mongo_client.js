@@ -2,19 +2,19 @@ import EventEmitter from 'events'
 import { MongoClient } from 'mongodb'
 
 /**
- * Initial timeout in second between retry attempts
+ * Initial interval in second between retry attempts
  * @type {number}
  */
-const RETRY_INIT_TIMEOUT = 0.1
+const RETRY_INIT_INTERVAL = 0.1
 
 /**
- * Maximum possible timeout in second between retry attempts
+ * Maximum possible interval in second between retry attempts
  * @type {number}
  */
-const RETRY_MAX_TIMEOUT = 5
+const RETRY_MAX_INTERVAL = 5
 
 /**
- * Multiplier is used to increase RETRY_TIMEOUT until it reach RETRY_MAX_TIMEOUT value
+ * Multiplier is used to increase RETRY_INTERVAL until it reach RETRY_MAX_INTERVAL value
  * @type {number}
  */
 const RETRY_MULTIPLIER = 2
@@ -37,17 +37,20 @@ class InsistentMongoClient extends EventEmitter {
      * @param {string} url MongoDB connection string
      * @param {Object} connectionOptions MongoClient options (@see http://mongodb.github.io/node-mongodb-native/2.1/reference/connecting/connection-settings/)
      * @param {Object} retriesOptions Retries behavior options
-     * @param {number} retriesOptions.initTimeout Initial timeout between first connections
-     * @param {number} retriesOptions.maxTimeout Maximum possible timeout between retries
-     * @param {number} retriesOptions.multiplier Multiplier is used to increase initTimeout until it reach maxTimeout value
+     * @param {number} retriesOptions.initInterval Initial interval between first connections
+     * @param {number} retriesOptions.maxInterval Maximum possible interval between retries
+     * @param {number} retriesOptions.multiplier Multiplier is used to increase initInterval until it reach maxInterval value
      * @constructor
      */
     constructor(url, connectionOptions, retriesOptions) {
+
+        super()
+
         this._url = url
         this._connectionOptions = connectionOptions
         this._retriesOptions = Object.assign({}, retriesOptions, {
-            initTimeout: RETRY_INIT_TIMEOUT,
-            maxTimeout:  RETRY_MAX_TIMEOUT,
+            initInterval: RETRY_INIT_INTERVAL,
+            maxInterval:  RETRY_MAX_INTERVAL,
             multiplier:  RETRY_MULTIPLIER,
         })
     }
@@ -82,29 +85,29 @@ class InsistentMongoClient extends EventEmitter {
      * @method
      * @param {string} asyncStrategy Type of resolver function. Must be either 'callback' or 'promise'.
      * @param {Function} callback Callback or resolve function.
-     * @param {number} [retryTimeout] Retry timeout.
+     * @param {number} [retryInterval] Retry interval.
      * @param {number} [retryAttempts] Retry attempts counter.
      */
-    _reconnect(asyncStrategy, callback, retryTimeout, retryAttempts) {
+    _reconnect(asyncStrategy, callback, retryInterval, retryAttempts) {
 
-        retryTimeout = retryTimeout || this._retriesOptions.timeout
+        retryInterval = retryInterval || this._retriesOptions.initInterval
         retryAttempts = retryAttempts || 0
 
         MongoClient.connect(this._url, this._connectionOptions, (err, database) => {
 
             if (err) {
 
-                retryTimeout = Math.min(retryTimeout * this._retriesOptions.multiplier, this._retriesOptions.maxTimeout)
+                retryInterval = Math.min(retryInterval * this._retriesOptions.multiplier, this._retriesOptions.maxInterval)
                 retryAttempts += 1
 
                 this.emit('retrying', {
                     attempt: retryAttempts,
-                    timeout: retryTimeout,
+                    interval: retryInterval,
                 })
 
                 return setTimeout(
-                    () => this._reconnect(asyncStrategy, callback, retryTimeout, retryAttempts),
-                    retryTimeout * 1000
+                    () => this._reconnect(asyncStrategy, callback, retryInterval, retryAttempts),
+                    retryInterval * 1000
                 )
             }
 
