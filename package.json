@@ -1,0 +1,15 @@
+{
+  "name": "ha-mongo-client",
+  "version": "1.0.0",
+  "description": "Wrapper arount native MongoClient that allows to retry connection to MongoDB on application startup",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com:antipin/ha-mongoclient.git"
+  },
+  "author": "Alexander I. Antipin",
+  "license": "MIT"
+}
