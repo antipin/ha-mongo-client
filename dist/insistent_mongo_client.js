@@ -1,7 +1,5 @@
-'use strict'
-
-const EventEmitter = require('events')
-const MongoClient = require('mongodb').MongoClient
+import EventEmitter from 'events'
+import { MongoClient } from 'mongodb'
 
 /**
  * Initial timeout in second between retry attempts
