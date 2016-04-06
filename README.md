@@ -1,5 +1,5 @@
-High Availability MongoClient
-=============================
+High Availability for MongoClient
+=================================
 
 HAMongoClient is a lightweight wrapper around native MongoClient
 that allows continuously retry connections to MongoDB.
