@@ -29,7 +29,7 @@ test('Correct intervals', (t) => new Promise((resolve, reject) => {
 
     t.plan(attemptsLimit * 2)
 
-    hAMongoClient.on('retrying', retry => {
+    hAMongoClient.on('retry', retry => {
 
         attemptsCounter += 1
         interval = Math.min(interval * multiplier, maxInterval)

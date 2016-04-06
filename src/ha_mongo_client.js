@@ -88,7 +88,7 @@ export default class HAMongoClient extends EventEmitter {
      * @param {Function} callback Callback or resolve function.
      * @param {number} [retryInterval] Retry interval.
      * @param {number} [retryAttempts] Retry attempts counter.
-     * @fires HAMongoClient#retrying
+     * @fires HAMongoClient#retry
      */
     _reconnect(asyncStrategy, callback, retryInterval, retryAttempts) {
 
@@ -102,7 +102,7 @@ export default class HAMongoClient extends EventEmitter {
                 retryInterval = Math.min(retryInterval * this._retriesOptions.multiplier, this._retriesOptions.maxInterval)
                 retryAttempts += 1
 
-                this.emit('retrying', {
+                this.emit('retry', {
                     attempt: retryAttempts,
                     interval: retryInterval,
                 })
