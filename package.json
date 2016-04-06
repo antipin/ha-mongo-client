@@ -1,6 +1,6 @@
 {
   "name": "ha-mongo-client",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "High availaility for MongoClient",
   "main": "dist/ha_mongo_client.js",
   "scripts": {
