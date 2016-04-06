@@ -48,11 +48,11 @@ class InsistentMongoClient extends EventEmitter {
 
         this._url = url
         this._connectionOptions = connectionOptions
-        this._retriesOptions = Object.assign({}, retriesOptions, {
+        this._retriesOptions = Object.assign({
             initInterval: RETRY_INIT_INTERVAL,
             maxInterval:  RETRY_MAX_INTERVAL,
             multiplier:  RETRY_MULTIPLIER,
-        })
+        }, retriesOptions)
     }
 
     /**
