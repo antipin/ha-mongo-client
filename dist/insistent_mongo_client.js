@@ -88,6 +88,7 @@ class InsistentMongoClient extends EventEmitter {
      * @param {Function} callback Callback or resolve function.
      * @param {number} [retryInterval] Retry interval.
      * @param {number} [retryAttempts] Retry attempts counter.
+     * @fires InsistentMongoClient#retrying
      */
     _reconnect(asyncStrategy, callback, retryInterval, retryAttempts) {
 
@@ -123,6 +124,9 @@ class InsistentMongoClient extends EventEmitter {
         })
     }
 
+    /**
+     * Aborts reconnect attempts
+     */
     abort() {
         clearTimeout(this._timeoutId)
     }
