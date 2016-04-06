@@ -1,7 +1,7 @@
 {
   "name": "ha-mongo-client",
   "version": "1.0.0",
-  "description": "Wrapper arount native MongoClient that allows to retry connection to MongoDB on application startup",
+  "description": "Wrapper around native MongoClient that allows to retry connection to MongoDB on application startup",
   "main": "dist/ha_mongo_client.js",
   "scripts": {
     "test": "./node_modules/.bin/ava",
