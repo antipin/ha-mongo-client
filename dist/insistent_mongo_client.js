@@ -53,6 +53,7 @@ class InsistentMongoClient extends EventEmitter {
             maxInterval:  RETRY_MAX_INTERVAL,
             multiplier:  RETRY_MULTIPLIER,
         }, retriesOptions)
+        this._timeoutId = null
     }
 
     /**
@@ -105,17 +106,25 @@ class InsistentMongoClient extends EventEmitter {
                     interval: retryInterval,
                 })
 
-                return setTimeout(
+                this._timeoutId = setTimeout(
                     () => this._reconnect(asyncStrategy, callback, retryInterval, retryAttempts),
                     retryInterval * 1000
                 )
+
+                return
             }
+
+            this._timeoutId = null
 
             switch (asyncStrategy) {
                 case 'callback': return callback(null, database)
                 case 'promise':  return callback(database)
             }
         })
+    }
+
+    abort() {
+        clearTimeout(this._timeoutId)
     }
 }
 
