@@ -2,7 +2,7 @@ import test from 'ava'
 import { Server } from 'mongodb-topology-manager'
 import fs from 'fs'
 import path from 'path'
-import InsistentMongoClient from '../'
+import InsistentMongoClient from '../src/insistent_mongo_client'
 
 const DB_PATH = path.join(__dirname, 'db')
 
