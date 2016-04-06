@@ -29,9 +29,9 @@ const RETRY_MULTIPLIER = 2
 /**
  * Creates a new wrapped high available MongoClient instance
  * @class
- * @return {InsistentMongoClient} a wrapped high available MongoClient instance.
+ * @return {HAMongoClient} a wrapped high available MongoClient instance.
  */
-class InsistentMongoClient extends EventEmitter {
+export default class HAMongoClient extends EventEmitter {
 
     /**
      * @param {string} url MongoDB connection string
@@ -88,7 +88,7 @@ class InsistentMongoClient extends EventEmitter {
      * @param {Function} callback Callback or resolve function.
      * @param {number} [retryInterval] Retry interval.
      * @param {number} [retryAttempts] Retry attempts counter.
-     * @fires InsistentMongoClient#retrying
+     * @fires HAMongoClient#retrying
      */
     _reconnect(asyncStrategy, callback, retryInterval, retryAttempts) {
 
@@ -131,5 +131,3 @@ class InsistentMongoClient extends EventEmitter {
         clearTimeout(this._timeoutId)
     }
 }
-
-export default InsistentMongoClient

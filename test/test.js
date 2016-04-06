@@ -2,7 +2,7 @@ import test from 'ava'
 import { Server } from 'mongodb-topology-manager'
 import fs from 'fs'
 import path from 'path'
-import InsistentMongoClient from '../src/insistent_mongo_client'
+import HAMongoClient from '../src/ha_mongo_client'
 
 const DB_PATH = path.join(__dirname, 'db')
 
@@ -21,7 +21,7 @@ test('Correct intervals', (t) => new Promise((resolve, reject) => {
     let maxInterval = 1
     let attemptsCounter = 0
 
-    const insistentMongoClient = new InsistentMongoClient('mongodb://unknown:27017', {}, {
+    const hAMongoClient = new HAMongoClient('mongodb://unknown:27017', {}, {
         initInterval: interval,
         multiplier:   multiplier,
         maxInterval:  maxInterval,
@@ -29,7 +29,7 @@ test('Correct intervals', (t) => new Promise((resolve, reject) => {
 
     t.plan(attemptsLimit * 2)
 
-    insistentMongoClient.on('retrying', retry => {
+    hAMongoClient.on('retrying', retry => {
 
         attemptsCounter += 1
         interval = Math.min(interval * multiplier, maxInterval)
@@ -39,19 +39,19 @@ test('Correct intervals', (t) => new Promise((resolve, reject) => {
 
         if (attemptsCounter === attemptsLimit) {
 
-            insistentMongoClient.abort()
+            hAMongoClient.abort()
             resolve()
         }
     })
 
-    insistentMongoClient.connect()
+    hAMongoClient.connect()
 }))
 
 test('Connecting to delayed mongod', (t) => {
 
     const serverManager = new Server('mongod', { dbpath: DB_PATH })
 
-    const insistentMongoClient = new InsistentMongoClient('mongodb://localhost:27017', {})
+    const hAMongoClient = new HAMongoClient('mongodb://localhost:27017', {})
 
     return serverManager.discover()
         .then(() => {
@@ -63,7 +63,7 @@ test('Connecting to delayed mongod', (t) => {
                 1000
             )
         })
-        .then(() => insistentMongoClient.connect())
+        .then(() => hAMongoClient.connect())
         .then(db => db.close())
         .then(() => serverManager.stop())
         .then(() => serverManager.purge())
