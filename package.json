@@ -2,7 +2,7 @@
   "name": "insistent-mongo-client",
   "version": "0.0.1",
   "description": "Wrapper arount native MongoClient that allows to retry connection to MongoDB on application startup",
-  "main": "dist/insistent_mongo_client.js",
+  "main": "src/insistent_mongo_client.js",
   "scripts": {
     "test": "./node_modules/.bin/ava"
   },
