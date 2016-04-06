@@ -1,3 +1,8 @@
+[![npm](https://img.shields.io/npm/v/ha-mongo-client.svg)](https://www.npmjs.com/package/ha-mongo-client)
+[![Build status](https://img.shields.io/travis/antipin/ha-mongo-client/master.svg)](https://travis-ci.org/antipin/ha-mongo-client)
+[![David](https://img.shields.io/david/antipin/ha-mongo-client.svg)](https://david-dm.org/antipin/ha-mongo-client)
+[![David](https://img.shields.io/david/dev/antipin/ha-mongo-client.svg)](https://david-dm.org/antipin/ha-mongo-client/#info=devDependencies&view=table)
+
 High Availability for MongoClient
 =================================
 
