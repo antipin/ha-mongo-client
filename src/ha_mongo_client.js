@@ -105,6 +105,7 @@ export default class HAMongoClient extends EventEmitter {
                 this.emit('retry', {
                     attempt: retryAttempts,
                     interval: retryInterval,
+                    error: err,
                 })
 
                 this._timeoutId = setTimeout(
