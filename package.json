@@ -14,8 +14,8 @@
   },
   "author": "Alexander I. Antipin",
   "license": "MIT",
-  "dependencies": {
-    "mongodb": "2.1.21"
+  "peerDependencies": {
+    "mongodb": ">=2.1"
   },
   "devDependencies": {
     "ava": "0.22.0",
