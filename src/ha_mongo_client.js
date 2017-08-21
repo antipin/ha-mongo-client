@@ -26,21 +26,19 @@ const RETRY_MULTIPLIER = 2
  * @param {Db} db The connected database.
  */
 
-/**
- * Creates a new wrapped high available MongoClient instance
- * @class
- * @return {HAMongoClient} a wrapped high available MongoClient instance.
- */
 export default class HAMongoClient extends EventEmitter {
 
     /**
+     * Creates a new wrapped high available MongoClient instance
      * @param {string} url MongoDB connection string
-     * @param {Object} connectionOptions MongoClient options (@see http://mongodb.github.io/node-mongodb-native/2.1/reference/connecting/connection-settings/)
+     * @param {Object} connectionOptions MongoClient options (@see http://bit.ly/node-mongodb-native-connection-settings)
      * @param {Object} retriesOptions Retries behavior options
      * @param {number} retriesOptions.initInterval Initial interval between first connections
      * @param {number} retriesOptions.maxInterval Maximum possible interval between retries
-     * @param {number} retriesOptions.multiplier Multiplier is used to increase initInterval until it reach maxInterval value
+     * @param {number} retriesOptions.multiplier Multiplier is used to increase initInterval 
+                                                 until it reach maxInterval value
      * @constructor
+     * @returns {HAMongoClient} a wrapped high available MongoClient instance.
      */
     constructor(url, connectionOptions, retriesOptions) {
 
@@ -54,14 +52,14 @@ export default class HAMongoClient extends EventEmitter {
             multiplier:  RETRY_MULTIPLIER,
         }, retriesOptions)
         this._timeoutId = null
+
     }
 
     /**
      * Emphatically connects to MongoDB
-     *
      * @method
      * @param {MongoClient~connectCallback} [callback] The command result callback
-     * @return {Promise} returns Promise if no callback provided
+     * @returns {Promise} returns Promise if no callback provided
      */
     connect(callback) {
 
@@ -70,36 +68,41 @@ export default class HAMongoClient extends EventEmitter {
 
             const PromiseLibrary = this._connectionOptions.promiseLibrary || Promise
 
-            return new PromiseLibrary((resolve, reject) => {
+            return new PromiseLibrary((resolve) => {
 
                 this._reconnect('promise', resolve)
+
             })
+
         }
 
         // Fallback to callback
         this._reconnect('callback', callback)
+
     }
 
     /**
      * Emphatically connects to MongoDB
-     *
      * @method
      * @param {string} asyncStrategy Type of resolver function. Must be either 'callback' or 'promise'.
      * @param {Function} callback Callback or resolve function.
      * @param {number} [retryInterval] Retry interval.
      * @param {number} [retryAttempts] Retry attempts counter.
      * @fires HAMongoClient#retry
+     * @returns {void}
      */
     _reconnect(asyncStrategy, callback, retryInterval, retryAttempts) {
 
         retryInterval = retryInterval || this._retriesOptions.initInterval
         retryAttempts = retryAttempts || 0
 
+        const { multiplier, maxInterval } = this._retriesOptions
+
         MongoClient.connect(this._url, this._connectionOptions, (err, database) => {
 
             if (err) {
 
-                retryInterval = Math.min(retryInterval * this._retriesOptions.multiplier, this._retriesOptions.maxInterval)
+                retryInterval = Math.min(retryInterval * multiplier, maxInterval)
                 retryAttempts += 1
 
                 this.emit('retry', {
@@ -114,21 +117,35 @@ export default class HAMongoClient extends EventEmitter {
                 )
 
                 return
+
             }
 
             this._timeoutId = null
 
             switch (asyncStrategy) {
-                case 'callback': return callback(null, database)
-                case 'promise':  return callback(database)
+
+                case 'callback': 
+                    return callback(null, database)
+
+                case 'promise':
+                default:
+                    return callback(database)
+
             }
+
         })
+
     }
 
     /**
      * Aborts reconnect attempts
+     * @returns {void}
      */
     abort() {
+
         clearTimeout(this._timeoutId)
+
     }
+
 }
+
