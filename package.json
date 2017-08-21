@@ -18,7 +18,7 @@
     "mongodb": "2.1.21"
   },
   "devDependencies": {
-    "ava": "0.15.1",
+    "ava": "0.22.0",
     "babel-cli": "6.26.0",
     "babel-plugin-add-module-exports": "0.2.1",
     "babel-preset-es2015": "6.24.1",

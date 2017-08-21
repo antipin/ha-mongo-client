@@ -41,6 +41,7 @@ test('Correct intervals', (t) => new Promise((resolve, reject) => {
 
             hAMongoClient.abort()
             resolve()
+
         }
     })
 
@@ -48,6 +49,8 @@ test('Correct intervals', (t) => new Promise((resolve, reject) => {
 }))
 
 test('Connecting to delayed mongod', (t) => {
+
+    t.plan(1)
 
     const serverManager = new Server('mongod', { dbpath: DB_PATH })
 
@@ -73,5 +76,6 @@ test('Connecting to delayed mongod', (t) => {
                 resolve()
             })
         }))
+        .then(() => t.pass())
         .catch(err => { throw err })
 })
