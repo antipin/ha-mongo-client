@@ -9,22 +9,29 @@ const DB_PATH = path.join(__dirname, 'db')
 test.before(() => {
 
     const serverManager = new Server()
-    return serverManager.discover().catch(err => { throw Error('Unable to find mongod binary') })
+
+    return serverManager
+        .discover()
+        .catch(() => { 
+
+            throw Error('Unable to find mongod binary')
+
+        })
+
 })
 
-test('Correct intervals', (t) => new Promise((resolve, reject) => {
+test('Correct intervals', (t) => new Promise((resolve) => {
 
     const attemptsLimit = 5
-
+    const multiplier = 2
+    const maxInterval = 1
     let interval = 0.1
-    let multiplier = 2
-    let maxInterval = 1
     let attemptsCounter = 0
 
     const hAMongoClient = new HAMongoClient('mongodb://unknown:27017', {}, {
         initInterval: interval,
-        multiplier:   multiplier,
-        maxInterval:  maxInterval,
+        multiplier,
+        maxInterval,
     })
 
     t.plan(attemptsLimit * 2)
@@ -43,39 +50,56 @@ test('Correct intervals', (t) => new Promise((resolve, reject) => {
             resolve()
 
         }
+
     })
 
     hAMongoClient.connect()
+
 }))
 
 test('Connecting to delayed mongod', (t) => {
 
-    t.plan(1)
-
     const serverManager = new Server('mongod', { dbpath: DB_PATH })
-
     const hAMongoClient = new HAMongoClient('mongodb://localhost:27017', {})
+    
+    t.plan(1)
 
     return serverManager.discover()
         .then(() => {
+
             // Starting mongod with delay
             setTimeout(
                 () => serverManager.purge()
                     .then(() => serverManager.start())
-                    .catch(err => { throw err }),
+                    .catch(err => {
+
+                        throw err
+                    
+                    }),
                 1000
             )
+
         })
         .then(() => hAMongoClient.connect())
         .then(db => db.close())
         .then(() => serverManager.stop())
         .then(() => serverManager.purge())
         .then(() => new Promise((resolve, reject) => {
+
             fs.rmdir(DB_PATH, (err) => {
+
                 if (err) return reject(err)
-                resolve()
+
+                return resolve()
+
             })
+
         }))
         .then(() => t.pass())
-        .catch(err => { throw err })
+        .catch(err => {
+
+            throw err
+
+        })
+
 })
